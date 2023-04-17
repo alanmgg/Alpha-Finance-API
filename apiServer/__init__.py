@@ -26,6 +26,10 @@ app = FastAPI(
     "name": "Alan Francisco Mora",
     "url": "https://alanfmorag.vercel.app/",
     "email": "alanfmorag@gmail.com",
+  },
+  license_info={
+    "name": "MIT License",
+    "url": "https://raw.githubusercontent.com/alanmgg/YFinance-API/main/LICENSE",
   }
 )
 
