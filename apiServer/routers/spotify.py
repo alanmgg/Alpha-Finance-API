@@ -23,7 +23,7 @@ async def get_data():
   today = date.today()
 
   data_spotify = yf.Ticker('SPOT')
-  spotify_hist = data_spotify.history(start = '2019-1-1', end = today, interval = '1d')
+  spotify_hist = data_spotify.history(start = '2023-1-1', end = today, interval = '1d')
   json_spotify = spotify_hist.to_json(orient="table")
   result_spotify = loads(json_spotify)
   
