@@ -42,3 +42,4 @@ app.add_middleware(
 )
 
 app.include_router(routers.base.router)
+app.include_router(routers.apple.router)
