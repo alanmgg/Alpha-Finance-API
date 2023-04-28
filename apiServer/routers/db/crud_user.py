@@ -1,5 +1,3 @@
-import json
-
 from firebase import firebase
 from . import schemas
 
@@ -15,3 +13,25 @@ def create_user(user: schemas.Users):
   }
   firebase.post('/users', json_user)
   return user
+
+def get_users():
+  result = firebase.get('/users', '')
+  return result
+
+def get_user(email):
+  result = get_users()
+  
+  for item in result:
+    if result[item]['email'] == email:
+      user_result = firebase.get('/users/' + item, '')
+
+  return user_result
+
+def delete_user(email):
+  result = get_users()
+
+  for item in result:
+    if result[item]['email'] == email:
+      user_result = firebase.delete('/users', item)
+  
+  return user_result
