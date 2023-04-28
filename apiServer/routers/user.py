@@ -34,6 +34,7 @@ async def get_user(id_user: int):
 
 @router.post("/users/{email}/{password}", tags=["Users"])
 async def get_user_by_email_and_password(email: str, password: str):
+  email = email.replace('%40', '@')
   user = db_module.crud_user.get_user_by_email(email=email)
   if user is None:
     raise HTTPException(status_code=404, detail="User not found")
