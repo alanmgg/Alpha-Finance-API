@@ -40,6 +40,10 @@ openapi_tags = [
     "description": "Routes to know if the API is active"
   },
   {
+    "name": "Users",
+    "description": "Routes to get data from Users"
+  },
+  {
     "name": "Amazon",
     "description": "Routes to get data from Amazon"
   },
@@ -78,6 +82,7 @@ app.add_middleware(
 )
 
 app.include_router(routers.base.router)
+app.include_router(routers.user.router)
 app.include_router(routers.amazon.router)
 app.include_router(routers.apple.router)
 app.include_router(routers.tesla.router)
