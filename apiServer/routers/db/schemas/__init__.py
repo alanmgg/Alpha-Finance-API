@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List
 from pydantic import BaseModel
 
 class Status(BaseModel):
@@ -10,3 +10,6 @@ class Users(BaseModel):
   email: str
   phone: int
   password: str
+
+class UsersCompanies(BaseModel):
+  companies: List[str] = []
