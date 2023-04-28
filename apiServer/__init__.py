@@ -9,6 +9,14 @@ This API developed with the help of Flask will help us connect to Yahoo Finance 
 ## Base
 We will be able to know if the API is in operation or is stopped through various methods. If so, please contact alanfmorag@gmail.com 📧
 
+## Users
+With the following routes you can:  
+☑️ Insert data from **user**.  
+☑️ Get data from **user**.  
+☑️ Get a single data from **user**.  
+☑️ Delete a single data from **user**.  
+☑️ Get a **user** by email and password. 
+
 ## Amazon
 With the following routes you can:  
 ☑️ Get data from **Amazon**.  

@@ -4,7 +4,14 @@ from . import schemas
 firebase = firebase.FirebaseApplication("https://yfinance-firebase-default-rtdb.firebaseio.com/", None)
 
 def create_user(user: schemas.Users):
+  result = firebase.get('/users', '')
+  if result == None:
+    id_user = 1
+  else:
+    id_user = len(result) + 1
+
   json_user = {
+    'id_user': id_user,
     'name': user.name,
     'last_name': user.last_name,
     'email': user.email,
@@ -18,20 +25,29 @@ def get_users():
   result = firebase.get('/users', '')
   return result
 
-def get_user(email):
-  result = get_users()
+def get_user(id_user):
+  result = firebase.get('/users', '')
+  for item in result:
+    if result[item]['id_user'] == id_user:
+      user_result = firebase.get('/users/' + item, '')
+      return user_result
   
+  return None
+
+def get_user_by_email(email):
+  result = firebase.get('/users', '')
   for item in result:
     if result[item]['email'] == email:
       user_result = firebase.get('/users/' + item, '')
-
-  return user_result
-
-def delete_user(email):
-  result = get_users()
-
-  for item in result:
-    if result[item]['email'] == email:
-      user_result = firebase.delete('/users', item)
+      return user_result
   
-  return user_result
+  return None
+
+def delete_user(id_user):
+  result = firebase.get('/users', '')
+  for item in result:
+    if result[item]['id_user'] == id_user:
+      firebase.delete('/users', item)
+      return result[item]['name']
+  
+  return None

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import db as db_module
@@ -25,12 +25,25 @@ async def get_users():
   users = db_module.crud_user.get_users()
   return users
 
-@router.get("/users/{email}", tags=["Users"])
-async def get_user(email: str):
-  user = db_module.crud_user.get_user(email=email)
+@router.get("/users/{id_user}", tags=["Users"])
+async def get_user(id_user: int):
+  user = db_module.crud_user.get_user(id_user=id_user)
+  if user is None:
+    raise HTTPException(status_code=404, detail="User not found")
   return user
 
-@router.delete("/users/{email}", tags=["Users"])
-async def delete_user(email: str):
-  user = db_module.crud_user.delete_user(email=email)
+@router.post("/users/{email}/{password}", tags=["Users"])
+async def get_user_by_email_and_password(email: str, password: str):
+  user = db_module.crud_user.get_user_by_email(email=email)
+  if user is None:
+    raise HTTPException(status_code=404, detail="User not found")
+  elif user['password'] != password:
+    raise HTTPException(status_code=404, detail="Wrong email or password")
   return user
+
+@router.delete("/users/{id_user}", tags=["Users"], response_model=db_module.schemas.Status)
+async def delete_user(id_user: int):
+  user = db_module.crud_user.delete_user(id_user=id_user)
+  if user is None:
+    raise HTTPException(status_code=404, detail="User not found")
+  return db_module.schemas.Status(message=f"Deleted user {user}")
