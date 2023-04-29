@@ -49,7 +49,7 @@ async def delete_user(id_user: int):
     raise HTTPException(status_code=404, detail="User not found")
   return db_module.schemas.Status(message=f"Deleted user {user_name}")
 
-@router.put("/users/{id_user}", tags=["Users"], response_model=db_module.schemas.Status)
+@router.put("/users-companies/{id_user}", tags=["Users"], response_model=db_module.schemas.Status)
 async def update_user(id_user: int, companies: db_module.schemas.UsersCompanies):
   user = db_module.crud_user.get_user(id_user=id_user)
   if user is None:

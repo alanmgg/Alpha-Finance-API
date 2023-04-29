@@ -15,6 +15,7 @@ With the following routes you can:
 ☑️ Get data from **user**.  
 ☑️ Get a single data from **user**.  
 ☑️ Delete a single data from **user**.  
+☑️ Update **user companies**.  
 ☑️ Get a **user** by email and password. 
 
 ## Amazon
