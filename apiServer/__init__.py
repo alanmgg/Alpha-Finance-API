@@ -17,6 +17,14 @@ With the following routes you can:
 ☑️ Delete a single data from **user**.  
 ☑️ Update **user companies**.  
 ☑️ Get a **user** by email and password. 
+
+## Finance
+With the following routes you can:  
+☑️ Get weekly **company** data.  
+☑️ Get today's data with **company** time interval.  
+☑️ Gets the **companies**.  
+☑️ Get **company** information.  
+☑️ Get **company** overview.  
 """
 
 openapi_tags = [
@@ -27,6 +35,10 @@ openapi_tags = [
   {
     "name": "Users",
     "description": "Routes to get data from Users"
+  },
+  {
+    "name": "Finance",
+    "description": "Routes that bring in data from Finance APIs"
   }
 ]
 
