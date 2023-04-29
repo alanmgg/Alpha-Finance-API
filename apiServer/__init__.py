@@ -17,30 +17,6 @@ With the following routes you can:
 ☑️ Delete a single data from **user**.  
 ☑️ Update **user companies**.  
 ☑️ Get a **user** by email and password. 
-
-## Amazon
-With the following routes you can:  
-☑️ Get data from **Amazon**.  
-☑️ Get top 10 data from **Amazon**.  
-☑️ **Amazon** data description.  
-☑️ Describe **Amazon** data.  
-☑️ Get **Amazon** data maps.  
-
-## Apple
-With the following routes you can:  
-☑️ Get data from **Apple**.  
-☑️ Get top 10 data from **Apple**.  
-☑️ **Apple** data description.  
-☑️ Describe **Apple** data.  
-☑️ Get **Apple** data maps.  
-
-## Tesla
-With the following routes you can:  
-☑️ Get data from **Tesla**.  
-☑️ Get top 10 data from **Tesla**.  
-☑️ **Tesla** data description.  
-☑️ Describe **Tesla** data.  
-☑️ Get **Tesla** data maps.  
 """
 
 openapi_tags = [
@@ -51,18 +27,6 @@ openapi_tags = [
   {
     "name": "Users",
     "description": "Routes to get data from Users"
-  },
-  {
-    "name": "Amazon",
-    "description": "Routes to get data from Amazon"
-  },
-  {
-    "name": "Apple",
-    "description": "Routes to get data from Apple"
-  },
-  {
-    "name": "Tesla",
-    "description": "Routes to get data from Tesla"
   }
 ]
 
@@ -92,6 +56,7 @@ app.add_middleware(
 
 app.include_router(routers.base.router)
 app.include_router(routers.user.router)
-app.include_router(routers.amazon.router)
-app.include_router(routers.apple.router)
-app.include_router(routers.tesla.router)
+app.include_router(routers.finance.router)
+# app.include_router(routers.amazon.router)
+# app.include_router(routers.apple.router)
+# app.include_router(routers.tesla.router)
