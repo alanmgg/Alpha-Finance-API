@@ -29,7 +29,7 @@ async def get_users():
 async def get_user(id_user: int):
   user = db_module.crud_user.get_user(id_user=id_user)
   if user is None:
-    raise HTTPException(status_code=404, detail="User not found")
+    raise HTTPException(status_code=404, detail="Usuario no encontrado ...")
   return user
 
 @router.post("/users/{email}/{password}", tags=["Users"])
@@ -37,22 +37,22 @@ async def get_user_by_email_and_password(email: str, password: str):
   email = email.replace('%40', '@')
   user = db_module.crud_user.get_user_by_email(email=email)
   if user is None:
-    raise HTTPException(status_code=404, detail="User not found")
+    raise HTTPException(status_code=404, detail="Usuario no encontrado ...")
   elif user['password'] != password:
-    raise HTTPException(status_code=404, detail="Wrong email or password")
+    raise HTTPException(status_code=404, detail="Correo o contraseña mal escritos ...")
   return user
 
 @router.delete("/users/{id_user}", tags=["Users"], response_model=db_module.schemas.Status)
 async def delete_user(id_user: int):
   user_name = db_module.crud_user.delete_user(id_user=id_user)
   if user_name is None:
-    raise HTTPException(status_code=404, detail="User not found")
-  return db_module.schemas.Status(message=f"Deleted user {user_name}")
+    raise HTTPException(status_code=404, detail="Usuario no encontrado ...")
+  return db_module.schemas.Status(message=f"Usuario {user_name} eliminado")
 
 @router.put("/users-companies/{id_user}", tags=["Users"], response_model=db_module.schemas.Status)
 async def update_user(id_user: int, companies: db_module.schemas.UsersCompanies):
   user = db_module.crud_user.get_user(id_user=id_user)
   if user is None:
-    raise HTTPException(status_code=404, detail="User not found")
+    raise HTTPException(status_code=404, detail="Usuario no encontrado ...")
   user_name = db_module.crud_user.update_user(id_user, companies)
-  return db_module.schemas.Status(message=f"Updated user {user_name}")
+  return db_module.schemas.Status(message=f"Usuario {user_name} actualizado")

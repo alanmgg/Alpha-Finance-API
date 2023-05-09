@@ -17,7 +17,7 @@ def create_user(user: schemas.Users):
     'email': user.email,
     'phone': user.phone,
     'password': user.password,
-    'companies': ['apple']
+    'companies': ['TSLA']
   }
   firebase.post('/users', json_user)
   return user
