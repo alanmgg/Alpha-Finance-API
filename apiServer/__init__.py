@@ -43,9 +43,9 @@ openapi_tags = [
 ]
 
 app = FastAPI(
-  title="Yahoo Finance API",
+  title="Alpha Finance API",
   description=description,
-  version="1.0.1",
+  version="1.0.2",
   openapi_tags=openapi_tags,
   contact={
     "name": "Alan Francisco Mora",
@@ -69,6 +69,4 @@ app.add_middleware(
 app.include_router(routers.base.router)
 app.include_router(routers.user.router)
 app.include_router(routers.finance.router)
-# app.include_router(routers.amazon.router)
-# app.include_router(routers.apple.router)
-# app.include_router(routers.tesla.router)
+app.include_router(routers.eda.router)
