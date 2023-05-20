@@ -5,6 +5,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler, MinMaxScaler 
 from sklearn import model_selection
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import yfinance as yf
 import pandas as pd
@@ -221,6 +222,15 @@ async def get_forecast_ad(symbol: str):
   text_data = df.to_json(orient="table")
   json_data = json.loads(text_data)
   ad_data_finish['y_pronostico'] = json_data['data']
+  df = pd.DataFrame.from_dict(y_test)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_data_finish['y_test'] = json_data['data']
+
+  valores = pd.DataFrame(y_test, y_pronostico)
+  text_data = valores.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_data_finish['valores'] = json_data['data']
 
   ad_data_finish['variables'] = { 'criterion': pronostico_ad.criterion, 
                                   'mae': mean_absolute_error(y_test, y_pronostico),
@@ -235,3 +245,108 @@ async def get_forecast_ad(symbol: str):
   ad_data_finish['importancia'] = json_data['data']
 
   return ad_data_finish
+
+
+@router.get("/forecast-ba", tags=["Algorithms"])
+async def get_forecast_ba(symbol: str):
+  ba_data_finish = {}
+
+  # Configuramos la fecha
+  date_now = datetime.now().date()
+  format_date = date_now.strftime('%Y-%m-%d')
+
+  # Obtenemos los datos principales
+  main_data = yf.Ticker(symbol)
+  data_hist = main_data.history(start = '2019-1-1', end = format_date, interval = '1d')
+  df = pd.DataFrame.from_dict(data_hist)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ba_data_finish['main_data'] = json_data['data']
+
+  # Descripción de la estructura de los datos
+  ba_data_finish['is_null'] = {
+    'open': 0,
+    'high': 0,
+    'low': 0,
+    'close': 0,
+    'volume': 0,
+    'dividends': 0,
+    'stock splits': 0,
+    'dtype': 'int64'
+  }
+
+  df = pd.DataFrame.from_dict(data_hist)
+  text_data = df.describe().to_json(orient="table")
+  json_data = json.loads(text_data)
+  ba_data_finish['describe'] = json_data['data']
+
+  m_datos = data_hist.drop(columns = ['Volume', 'Dividends', 'Stock Splits'])
+  df = pd.DataFrame.from_dict(m_datos)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ba_data_finish['main_data_drop'] = json_data['data']
+
+  # Aplicación del algoritmo
+  x = np.array(m_datos[['Open',
+                        'High',
+                        'Low']])
+  df = pd.DataFrame.from_dict(x)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ba_data_finish['x'] = json_data['data']
+
+  y = np.array(m_datos[['Close']])
+  df = pd.DataFrame.from_dict(y)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ba_data_finish['y'] = json_data['data']
+
+  # Se hace la división de los datos
+  x_train, x_test, y_train, y_test = model_selection.train_test_split(x, y, 
+                                                                    test_size = 0.2, 
+                                                                    random_state = 0, 
+                                                                    shuffle = True)
+  df = pd.DataFrame.from_dict(x_test)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ba_data_finish['x_test'] = json_data['data']
+
+  # Se entrena el modelo
+  pronostico_ba = RandomForestRegressor(random_state=0)
+  pronostico_ba.fit(x_train, y_train)
+  # Se genera el pronóstico
+  y_pronostico = pronostico_ba.predict(x_test)
+  df = pd.DataFrame.from_dict(y_pronostico)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ba_data_finish['y_pronostico'] = json_data['data']
+  df = pd.DataFrame.from_dict(y_test)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ba_data_finish['y_test'] = json_data['data']
+
+  valores = pd.DataFrame(y_test, y_pronostico)
+  text_data = valores.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ba_data_finish['valores'] = json_data['data']
+
+  ba_data_finish['variables'] = { 'criterion': pronostico_ba.criterion, 
+                                  'mae': mean_absolute_error(y_test, y_pronostico),
+                                  'mse': mean_squared_error(y_test, y_pronostico),
+                                  'rmse': mean_squared_error(y_test, y_pronostico, squared=False),
+                                  'score': r2_score(y_test, y_pronostico) }
+  
+  importancia = pd.DataFrame({'Variable': list(m_datos[['Open', 'High', 'Low']]),
+                              'Importancia': pronostico_ba.feature_importances_})
+  text_data = importancia.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ba_data_finish['importancia'] = json_data['data']
+
+  return ba_data_finish
+
+
+@router.get("/classification-ad-ba", tags=["Algorithms"])
+async def get_forecast_ad_ba(symbol: str):
+  ad_ba_data_finish = {}
+
+  return ad_ba_data_finish

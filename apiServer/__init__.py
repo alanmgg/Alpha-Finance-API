@@ -24,9 +24,11 @@ Con las siguientes rutas podrás:
 
 ## Algorithms
 Con las siguientes rutas podrás:  
-☑️ Obtener el algoritmo de **EDA**.  
+☑️ Obtener el algoritmo de **Análisis Exploratorio de Datos (EDA)**.  
 ☑️ Obtener el algoritmo de **Análisis de Componentes Principales (ACP)**.  
 ☑️ Obtener el algoritmo de **Pronóstico con árboles de decisión**.  
+☑️ Obtener el algoritmo de **Pronóstico con bosques aleatorios**.  
+☑️ Obtener el algoritmo de **Clasificación con árboles de decisión y bosques aleatorios**.  
 """
 
 openapi_tags = [
