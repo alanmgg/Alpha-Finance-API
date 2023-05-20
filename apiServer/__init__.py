@@ -20,19 +20,13 @@ Con las siguientes rutas podrás:
 
 ## Finance
 Con las siguientes rutas podrás:  
-☑️ Obtener los datos semanales de la **empresa**.  
-☑️ Obtener los datos en un intervalo de tiempo de la **empresa**.  
-☑️ Obtener las primeras 25 **empresas**.  
-☑️ Obtener información de una **empresa**.  
-☑️ Obtener una descripción general de la **empresa**.  
+☑️ Obtener las primeras **500 empresas**.   
 
-## EDA
+## Algorithms
 Con las siguientes rutas podrás:  
-☑️ Obtener los **datos principales**.  
-☑️ Obtener los **primeros 10 datos**.  
-☑️ **Descripción y nulos** de los datos.  
-☑️ Describir los datos con ayuda de **pandas**.  
-☑️ Obtener los datos **correlacionales**.  
+☑️ Obtener el algoritmo de **EDA**.  
+☑️ Obtener el algoritmo de **Análisis de Componentes Principales (ACP)**.  
+☑️ Obtener el algoritmo de **Pronóstico con árboles de decisión**.  
 """
 
 openapi_tags = [
@@ -49,15 +43,15 @@ openapi_tags = [
     "description": "Rutas que traen datos de la API de Alpha Vantage"
   },
   {
-    "name": "EDA",
-    "description": "Rutas que traen datos para realizar el proceso EDA"
+    "name": "Algorithms",
+    "description": "Rutas hechas para los algoritmos de la APP"
   }
 ]
 
 app = FastAPI(
   title="Alpha Finance API",
   description=description,
-  version="1.0.3",
+  version="1.0.5",
   openapi_tags=openapi_tags,
   contact={
     "name": "Alan Francisco Mora",
@@ -81,5 +75,4 @@ app.add_middleware(
 app.include_router(routers.base.router)
 app.include_router(routers.user.router)
 app.include_router(routers.finance.router)
-app.include_router(routers.eda.router)
-app.include_router(routers.pca.router)
+app.include_router(routers.algorithms.router)
