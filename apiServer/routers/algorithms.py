@@ -4,9 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler, MinMaxScaler 
 from sklearn import model_selection
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -346,7 +346,123 @@ async def get_forecast_ba(symbol: str):
 
 
 @router.get("/classification-ad-ba", tags=["Algorithms"])
-async def get_forecast_ad_ba(symbol: str):
+async def get_forecast_ad_ba():
   ad_ba_data_finish = {}
+
+  url = "https://raw.githubusercontent.com/alanmgg/Data-Mining/main/Proyecto/Drug.csv"
+  data_ad_ba = pd.read_csv(url)
+  text_data = data_ad_ba.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['main_data'] = json_data['data']
+
+  # Sexo del paciente
+  data_ad_ba.loc[data_ad_ba['Sex'] == 'F', 'Sex'] = 1.0
+  data_ad_ba.loc[data_ad_ba['Sex'] == 'M', 'Sex'] = 2.0
+  # Presión sanguinea
+  data_ad_ba.loc[data_ad_ba['BP'] == 'LOW', 'BP'] = 1.0
+  data_ad_ba.loc[data_ad_ba['BP'] == 'NORMAL', 'BP'] = 2.0
+  data_ad_ba.loc[data_ad_ba['BP'] == 'HIGH', 'BP'] = 3.0
+  # Nivel del colesterol
+  data_ad_ba.loc[data_ad_ba['Cholesterol'] == 'NORMAL', 'Cholesterol'] = 1.0
+  data_ad_ba.loc[data_ad_ba['Cholesterol'] == 'HIGH', 'Cholesterol'] = 2.0
+  # Medicamento que funciono con ese paciente
+  data_ad_ba.loc[data_ad_ba['Drug'] == 'drugA', 'Drug'] = 1.0
+  data_ad_ba.loc[data_ad_ba['Drug'] == 'drugB', 'Drug'] = 2.0
+  data_ad_ba.loc[data_ad_ba['Drug'] == 'drugC', 'Drug'] = 3.0
+  data_ad_ba.loc[data_ad_ba['Drug'] == 'drugX', 'Drug'] = 4.0
+  data_ad_ba.loc[data_ad_ba['Drug'] == 'drugY', 'Drug'] = 5.0
+  # Convertir la columna en tipo float
+  data_ad_ba['Sex'] = data_ad_ba['Sex'].astype(float)
+  data_ad_ba['BP'] = data_ad_ba['BP'].astype(float)
+  data_ad_ba['Cholesterol'] = data_ad_ba['Cholesterol'].astype(float)
+  data_ad_ba['Drug'] = data_ad_ba['Drug'].astype(float)
+  text_data = data_ad_ba.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['main_data_new'] = json_data['data']
+
+  # Descripción de la estructura de los datos
+  ad_ba_data_finish['is_null'] = {
+    'age': 0,
+    'sex': 0,
+    'bp': 0,
+    'cholesterol': 0,
+    'na_to_k': 0,
+    'drug': 0,
+    'dtype': 'float64(5), int64(1)'
+  }
+
+  text_data = data_ad_ba.groupby('Drug').size().to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['groupby'] = json_data['data']
+  
+  text_data = data_ad_ba.describe().to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['describe'] = json_data['data']
+
+  # Variables predictoras
+  x = np.array(data_ad_ba[['Age',
+                            'Sex',
+                            'BP',
+                            'Cholesterol',
+                            'Na_to_K']])
+  df = pd.DataFrame(x)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['x'] = json_data['data']
+
+  # Variable clase
+  y = np.array(data_ad_ba[['Drug']])
+  df = pd.DataFrame(y)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['y'] = json_data['data']
+
+  x_train, x_validation, y_train, y_validation = model_selection.train_test_split(x, y, 
+                                                                                test_size = 0.2, 
+                                                                                random_state = 0,
+                                                                                shuffle = True)
+
+  df = pd.DataFrame.from_dict(x_train)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['x_train'] = json_data['data']
+
+  # Se entrena el modelo a partir de los datos de entrada
+  clasificacion_ad = DecisionTreeClassifier(random_state=0)
+  clasificacion_ad.fit(x_train, y_train)
+  # Clasificación final 
+  y_clasificacion_ad = clasificacion_ad.predict(x_validation)
+  lista_array = y_clasificacion_ad.tolist()
+  ad_ba_data_finish['y_clasificacion_ad'] = lista_array
+
+  valores_mod_1 = pd.DataFrame(y_validation, y_clasificacion_ad)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['valores_mod_1'] = json_data['data']
+
+  ad_ba_data_finish['accuracy_score'] = accuracy_score(y_validation, y_clasificacion_ad)
+
+  # Matriz de clasificación
+  modelo_clasificacion_1 = clasificacion_ad.predict(x_validation)
+  matriz_clasificacion_1 = pd.crosstab(y_validation.ravel(), 
+                                    modelo_clasificacion_1, 
+                                    rownames=['Actual'], 
+                                    colnames=['Clasificación'])
+  text_data = matriz_clasificacion_1.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['matriz_clasificacion_1'] = json_data['data']
+
+  ad_ba_data_finish['variables'] = { 'criterion': clasificacion_ad.criterion, 
+                                  'exactitud': accuracy_score(y_validation, y_clasificacion_ad) }
+  
+  importancia_mod_1 = pd.DataFrame({'Variable': list(data_ad_ba[['Age',
+                                                              'Sex',
+                                                              'BP',
+                                                              'Cholesterol',
+                                                              'Na_to_K']]),
+                                'Importancia': clasificacion_ad.feature_importances_}).sort_values('Importancia', ascending=False)
+  text_data = importancia_mod_1.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['importancia_mod_1'] = json_data['data']
 
   return ad_ba_data_finish
