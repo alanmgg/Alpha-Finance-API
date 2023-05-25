@@ -2,11 +2,11 @@ from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 
 from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler, MinMaxScaler 
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, label_binarize
 from sklearn import model_selection
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score, roc_curve, auc
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -399,6 +399,10 @@ async def get_forecast_ad_ba():
   json_data = json.loads(text_data)
   ad_ba_data_finish['describe'] = json_data['data']
 
+  text_data = data_ad_ba.corr().to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['corr'] = json_data['data']
+
   # Variables predictoras
   x = np.array(data_ad_ba[['Age',
                             'Sex',
@@ -440,7 +444,7 @@ async def get_forecast_ad_ba():
   json_data = json.loads(text_data)
   ad_ba_data_finish['valores_mod_1'] = json_data['data']
 
-  ad_ba_data_finish['accuracy_score'] = accuracy_score(y_validation, y_clasificacion_ad)
+  ad_ba_data_finish['accuracy_score_ad'] = accuracy_score(y_validation, y_clasificacion_ad)
 
   # Matriz de clasificación
   modelo_clasificacion_1 = clasificacion_ad.predict(x_validation)
@@ -452,8 +456,8 @@ async def get_forecast_ad_ba():
   json_data = json.loads(text_data)
   ad_ba_data_finish['matriz_clasificacion_1'] = json_data['data']
 
-  ad_ba_data_finish['variables'] = { 'criterion': clasificacion_ad.criterion, 
-                                  'exactitud': accuracy_score(y_validation, y_clasificacion_ad) }
+  ad_ba_data_finish['variables_ad'] = { 'criterion': clasificacion_ad.criterion, 
+                                        'exactitud': accuracy_score(y_validation, y_clasificacion_ad) }
   
   importancia_mod_1 = pd.DataFrame({'Variable': list(data_ad_ba[['Age',
                                                               'Sex',
@@ -464,5 +468,61 @@ async def get_forecast_ad_ba():
   text_data = importancia_mod_1.to_json(orient="table")
   json_data = json.loads(text_data)
   ad_ba_data_finish['importancia_mod_1'] = json_data['data']
+
+  clasificacion_ba = RandomForestClassifier(random_state=0)
+  clasificacion_ba.fit(x_train, y_train)
+  y_clasificacion_ba = clasificacion_ba.predict(x_validation)
+  lista_array = y_clasificacion_ba.tolist()
+  ad_ba_data_finish['y_clasificacion_ba'] = lista_array
+
+  valores_mod_2 = pd.DataFrame(y_validation, y_clasificacion_ba)
+  text_data = valores_mod_2.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['valores_mod_2'] = json_data['data']
+
+  ad_ba_data_finish['accuracy_score_ba'] = accuracy_score(y_validation, y_clasificacion_ba)
+
+  # Matriz de clasificación
+  modelo_clasificacion_2 = clasificacion_ba.predict(x_validation)
+  matriz_clasificacion_2 = pd.crosstab(y_validation.ravel(),
+                                      modelo_clasificacion_2,
+                                      rownames=['Reales'],
+                                      colnames=['Clasificación'])
+  text_data = matriz_clasificacion_2.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['matriz_clasificacion_2'] = json_data['data']
+
+  ad_ba_data_finish['variables_ba'] = { 'criterion': clasificacion_ba.criterion, 
+                                        'exactitud': accuracy_score(y_validation, y_clasificacion_ba) }
+
+  importancia_mod_2 = pd.DataFrame({'Variable': list(data_ad_ba[['Age',
+                                                          'Sex',
+                                                          'BP',
+                                                          'Cholesterol',
+                                                          'Na_to_K']]), 
+                             'Importancia': clasificacion_ba.feature_importances_}).sort_values('Importancia', ascending=False)
+  text_data = importancia_mod_2.to_json(orient="table")
+  json_data = json.loads(text_data)
+  ad_ba_data_finish['importancia_mod_2'] = json_data['data']
+
+  ad_ba_data_finish['validation'] = { 'ad': accuracy_score(y_validation, y_clasificacion_ad), 
+                                      'ba': accuracy_score(y_validation, y_clasificacion_ba) }
+  
+  # Rendimiento
+  y_score = clasificacion_ba.predict_proba(x_validation)
+  y_test_bin = label_binarize(y_validation, classes=[1, 
+                                                    2, 
+                                                    3,
+                                                    4,
+                                                    5])
+  n_classes = y_test_bin.shape[1]
+  # Se calcula la curva ROC y el área bajo la curva para cada clase
+  fpr = dict()
+  tpr = dict()
+  response = []
+  for i in range(n_classes):
+    fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_score[:, i])
+    response.append(auc(fpr[i], tpr[i]))
+  ad_ba_data_finish['auc'] = response
 
   return ad_ba_data_finish
