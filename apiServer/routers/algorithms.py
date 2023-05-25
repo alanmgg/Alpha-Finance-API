@@ -4,9 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, label_binarize
 from sklearn import model_selection
+from sklearn.cluster import KMeans
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score, roc_curve, auc
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score, roc_curve, auc, pairwise_distances_argmin_min
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -440,7 +441,7 @@ async def get_forecast_ad_ba():
   ad_ba_data_finish['y_clasificacion_ad'] = lista_array
 
   valores_mod_1 = pd.DataFrame(y_validation, y_clasificacion_ad)
-  text_data = df.to_json(orient="table")
+  text_data = valores_mod_1.to_json(orient="table")
   json_data = json.loads(text_data)
   ad_ba_data_finish['valores_mod_1'] = json_data['data']
 
@@ -526,3 +527,225 @@ async def get_forecast_ad_ba():
   ad_ba_data_finish['auc'] = response
 
   return ad_ba_data_finish
+
+
+@router.get("/segmentation-classification", tags=["Algorithms"])
+async def get_segmentation():
+  segmentation_data_finish = {}
+
+  url = "https://raw.githubusercontent.com/alanmgg/Data-Mining/main/Proyecto/CustomerSegmentation.csv"
+  data_clientes = pd.read_csv(url)
+  text_data = data_clientes.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['main_data'] = json_data['data']
+
+  # Sexo del cliente
+  data_clientes.loc[data_clientes['Gender'] == 'Female', 'Gender'] = 1.0
+  data_clientes.loc[data_clientes['Gender'] == 'Male', 'Gender'] = 2.0
+  # Estado civil
+  data_clientes.loc[data_clientes['Ever_Married'] == 'No', 'Ever_Married'] = 1.0
+  data_clientes.loc[data_clientes['Ever_Married'] == 'Yes', 'Ever_Married'] = 2.0
+  # Graduado
+  data_clientes.loc[data_clientes['Graduated'] == 'No', 'Graduated'] = 1.0
+  data_clientes.loc[data_clientes['Graduated'] == 'Yes', 'Graduated'] = 2.0
+  # Profesión
+  data_clientes.loc[data_clientes['Profession'] == 'Artist', 'Profession'] = 1.0
+  data_clientes.loc[data_clientes['Profession'] == 'Doctor', 'Profession'] = 2.0
+  data_clientes.loc[data_clientes['Profession'] == 'Engineer', 'Profession'] = 3.0
+  data_clientes.loc[data_clientes['Profession'] == 'Entertainment', 'Profession'] = 4.0
+  data_clientes.loc[data_clientes['Profession'] == 'Executive', 'Profession'] = 5.0
+  data_clientes.loc[data_clientes['Profession'] == 'Healthcare', 'Profession'] = 6.0
+  data_clientes.loc[data_clientes['Profession'] == 'Homemaker', 'Profession'] = 7.0
+  data_clientes.loc[data_clientes['Profession'] == 'Lawyer', 'Profession'] = 8.0
+  data_clientes.loc[data_clientes['Profession'] == 'Marketing', 'Profession'] = 9.0
+  # Score
+  data_clientes.loc[data_clientes['Spending_Score'] == 'High', 'Spending_Score'] = 1.0
+  data_clientes.loc[data_clientes['Spending_Score'] == 'Average', 'Spending_Score'] = 2.0
+  data_clientes.loc[data_clientes['Spending_Score'] == 'Low', 'Spending_Score'] = 3.0
+  # Medicamento que funciono con ese paciente
+  data_clientes.loc[data_clientes['Var_1'] == 'Cat_1', 'Var_1'] = 1.0
+  data_clientes.loc[data_clientes['Var_1'] == 'Cat_2', 'Var_1'] = 2.0
+  data_clientes.loc[data_clientes['Var_1'] == 'Cat_3', 'Var_1'] = 3.0
+  data_clientes.loc[data_clientes['Var_1'] == 'Cat_4', 'Var_1'] = 4.0
+  data_clientes.loc[data_clientes['Var_1'] == 'Cat_5', 'Var_1'] = 5.0
+  data_clientes.loc[data_clientes['Var_1'] == 'Cat_6', 'Var_1'] = 6.0
+  data_clientes.loc[data_clientes['Var_1'] == 'Cat_7', 'Var_1'] = 7.0
+  # Reemplazar datos nulos por un 99
+  data_clientes.fillna(99, inplace=True)
+  # Convertir la columna en tipo float
+  data_clientes['Gender'] = data_clientes['Gender'].astype(float)
+  data_clientes['Ever_Married'] = data_clientes['Ever_Married'].astype(float)
+  data_clientes['Graduated'] = data_clientes['Graduated'].astype(float)
+  data_clientes['Profession'] = data_clientes['Profession'].astype(float)
+  data_clientes['Spending_Score'] = data_clientes['Spending_Score'].astype(float)
+  data_clientes['Var_1'] = data_clientes['Var_1'].astype(float)
+  text_data = data_clientes.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['main_data_new'] = json_data['data']
+
+  # Descripción de la estructura de los datos
+  segmentation_data_finish['is_null'] = {
+    'ID': 0,
+    'Gender': 0,
+    'Ever_Married': 0,
+    'Age': 0,
+    'Graduated': 0,
+    'Profession': 0,
+    'Work_Experience': 0,
+    'Spending_Score': 0,
+    'Family_Size': 0,
+    'Var_1': 0,
+    'dtype': 'float64(5), int64(1)'
+  }
+
+  text_data = data_clientes.groupby('Gender').size().to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['groupby'] = json_data['data']
+  
+  data_clientes.drop(['ID'], axis=1, inplace=True)
+  text_data = data_clientes.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['main_data_new_drop'] = json_data['data']
+
+  text_data = data_clientes.corr().to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['corr'] = json_data['data']
+
+  estandarizar = StandardScaler()                               # Se instancia el objeto StandardScaler o MinMaxScaler 
+  m_estandarizada = estandarizar.fit_transform(data_clientes)    # Se calculan la media y desviación y se escalan los datos
+  df = pd.DataFrame(m_estandarizada)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['m_estandarizada'] = json_data['data']
+
+  # Definición de k clusters para K-means
+  # Se utiliza random_state para inicializar el generador interno de números aleatorios
+  sse = []
+  for i in range(2, 10):
+      km = KMeans(n_clusters=i, random_state=0)
+      km.fit(m_estandarizada)
+      sse.append(km.inertia_)
+  segmentation_data_finish['sse'] = sse
+
+  # Se crean las etiquetas de los elementos en los clusters
+  m_particional = KMeans(n_clusters=4, random_state=0).fit(m_estandarizada)
+  m_particional.predict(m_estandarizada)
+  data_clientes['ClusterC'] = m_particional.labels_
+  text_data = data_clientes.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['matriz_cluster'] = json_data['data']
+
+  text_data = data_clientes.groupby('ClusterC').size().to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['groupby_cluster'] = json_data['data']
+
+  text_data = data_clientes.groupby('ClusterC').mean().to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['centroides'] = json_data['data']
+  
+  lista_array = m_estandarizada[:, 0].tolist()
+  segmentation_data_finish['scatter_m_est_x'] = lista_array
+  lista_array = m_estandarizada[:, 1].tolist()
+  segmentation_data_finish['scatter_m_est_y'] = lista_array
+  lista_array = m_estandarizada[:, 2].tolist()
+  segmentation_data_finish['scatter_m_est_z'] = lista_array
+  lista_array = m_particional.cluster_centers_[:, 0].tolist()
+  segmentation_data_finish['scatter_m_par_x'] = lista_array
+  lista_array = m_particional.cluster_centers_[:, 1].tolist()
+  segmentation_data_finish['scatter_m_par_y'] = lista_array
+  lista_array = m_particional.cluster_centers_[:, 2].tolist()
+  segmentation_data_finish['scatter_m_par_z'] = lista_array
+
+  # Variables predictoras
+  x = np.array(data_clientes[['Gender', 
+                              'Ever_Married', 
+                              'Age', 
+                              'Graduated', 
+                              'Profession', 
+                              'Work_Experience',
+                              'Spending_Score',
+                              'Family_Size',
+                              'Var_1']])
+  df = pd.DataFrame(x)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['x'] = json_data['data']
+
+  # Variable clase
+  y = np.array(data_clientes[['ClusterC']])
+  df = pd.DataFrame(y)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['y'] = json_data['data']
+
+  x_train, x_validation, y_train, y_validation = model_selection.train_test_split(x, y, 
+                                                                                test_size = 0.2, 
+                                                                                random_state = 0,
+                                                                                shuffle = True)
+  df = pd.DataFrame.from_dict(x_train)
+  text_data = df.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['x_train'] = json_data['data']
+
+  clasificacion_ba = RandomForestClassifier(n_estimators=105,
+                                         max_depth=8, 
+                                         min_samples_split=4, 
+                                         min_samples_leaf=2, 
+                                         random_state=1234)
+  clasificacion_ba.fit(x_train, y_train)
+  # Clasificación final 
+  y_clasificacion_ba = clasificacion_ba.predict(x_validation)
+  lista_array = y_clasificacion_ba.tolist()
+  segmentation_data_finish['y_clasificacion_ba'] = lista_array
+
+  valores_ba = pd.DataFrame(y_validation, y_clasificacion_ba)
+  text_data = valores_ba.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['valores_ba'] = json_data['data']
+  
+  segmentation_data_finish['accuracy_score'] = accuracy_score(y_validation, y_clasificacion_ba)
+
+  # Matriz de clasificación
+  modelo_clasificacion = clasificacion_ba.predict(x_validation)
+  matriz_clasificacion = pd.crosstab(y_validation.ravel(),
+                                      modelo_clasificacion,
+                                      rownames=['Reales'],
+                                      colnames=['Clasificación'])
+  text_data = matriz_clasificacion.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['matriz_clasificacion'] = json_data['data']
+
+  segmentation_data_finish['variables'] = { 'criterion': clasificacion_ba.criterion, 
+                                            'exactitud': accuracy_score(y_validation, y_clasificacion_ba) }
+
+  importancia = pd.DataFrame({'Variable': list(data_clientes[['Gender', 
+                                                              'Ever_Married', 
+                                                              'Age', 
+                                                              'Graduated', 
+                                                              'Profession', 
+                                                              'Work_Experience',
+                                                              'Spending_Score',
+                                                              'Family_Size',
+                                                              'Var_1']]), 
+                             'Importancia': clasificacion_ba.feature_importances_}).sort_values('Importancia', ascending=False)
+  text_data = importancia.to_json(orient="table")
+  json_data = json.loads(text_data)
+  segmentation_data_finish['importancia'] = json_data['data']
+
+  # Rendimiento
+  y_score = clasificacion_ba.predict_proba(x_validation)
+  y_test_bin = label_binarize(y_validation, classes=[0,
+                                                    1, 
+                                                    2, 
+                                                    3])
+  n_classes = y_test_bin.shape[1]
+  # Se calcula la curva ROC y el área bajo la curva para cada clase
+  fpr = dict()
+  tpr = dict()
+  response = []
+  for i in range(n_classes):
+    fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_score[:, i])
+    response.append(auc(fpr[i], tpr[i]))
+  segmentation_data_finish['auc'] = response
+
+  return segmentation_data_finish

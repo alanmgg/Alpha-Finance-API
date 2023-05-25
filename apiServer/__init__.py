@@ -29,6 +29,7 @@ Con las siguientes rutas podrás:
 ☑️ Obtener el algoritmo de **Pronóstico con árboles de decisión**.  
 ☑️ Obtener el algoritmo de **Pronóstico con bosques aleatorios**.  
 ☑️ Obtener el algoritmo de **Clasificación con árboles de decisión y bosques aleatorios**.  
+☑️ Obtener el algoritmo de **Clustering particional y clasificación**.  
 """
 
 openapi_tags = [
