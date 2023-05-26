@@ -15,8 +15,12 @@ Con las siguientes rutas podrás:
 ☑️ Obtener datos de todos los **usuarios**.  
 ☑️ Obtener datos de un solo **usuario**.  
 ☑️ Eliminar datos de un **usuario**.  
-☑️ Actualizar las **compañias de un usuario**.  
 ☑️ Obtener el **usuario** por su correo y contraseña. 
+
+## Files
+Con las siguientes rutas podrás:  
+☑️ Subir un archivo a **Firebase**.   
+☑️ Obtener los archivos guardados en **Firebase** de un usuario.   
 
 ## Finance
 Con las siguientes rutas podrás:  
@@ -39,6 +43,10 @@ openapi_tags = [
   },
   {
     "name": "Users",
+    "description": "Rutas para obtener datos de los usuarios"
+  },
+  {
+    "name": "Files",
     "description": "Rutas para obtener datos de los usuarios"
   },
   {
@@ -79,3 +87,4 @@ app.include_router(routers.base.router)
 app.include_router(routers.user.router)
 app.include_router(routers.finance.router)
 app.include_router(routers.algorithms.router)
+app.include_router(routers.file.router)

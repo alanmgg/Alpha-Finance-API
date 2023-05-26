@@ -1,5 +1,6 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 from . import db as db_module
 
@@ -49,10 +50,10 @@ async def delete_user(id_user: int):
     raise HTTPException(status_code=404, detail="Usuario no encontrado ...")
   return db_module.schemas.Status(message=f"Usuario {user_name} eliminado")
 
-@router.put("/users-companies/{id_user}", tags=["Users"], response_model=db_module.schemas.Status)
-async def update_user(id_user: int, companies: db_module.schemas.UsersCompanies):
-  user = db_module.crud_user.get_user(id_user=id_user)
-  if user is None:
-    raise HTTPException(status_code=404, detail="Usuario no encontrado ...")
-  user_name = db_module.crud_user.update_user(id_user, companies)
-  return db_module.schemas.Status(message=f"Usuario {user_name} actualizado")
+# @router.put("/users-companies/{id_user}", tags=["Users"], response_model=db_module.schemas.Status)
+# async def update_user(id_user: int, companies: db_module.schemas.UsersCompanies):
+#   user = db_module.crud_user.get_user(id_user=id_user)
+#   if user is None:
+#     raise HTTPException(status_code=404, detail="Usuario no encontrado ...")
+#   user_name = db_module.crud_user.update_user(id_user, companies)
+#   return db_module.schemas.Status(message=f"Usuario {user_name} actualizado")
