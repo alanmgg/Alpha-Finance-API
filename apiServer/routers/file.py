@@ -41,4 +41,4 @@ async def download_file(id_user: int, file_name: str):
   file = db_module.crud_files.download_file(id_user=id_user, file_name=file_name)
   if file is None:
     raise HTTPException(status_code=404, detail="Archivo no encontrados ...")
-  return file
+  return db_module.schemas.Status(message=f"Archivo {file_name} descargado correctamente")

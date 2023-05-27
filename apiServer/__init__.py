@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from . import routers
 
 description = """
-Esta API desarrollada con la ayuda de FastAPI nos ayudará a conectarnos a Alpha Vantage 🚀
+Esta API desarrollada con la ayuda de FastAPI nos ayudará a conectarnos a Yahoo Finance y Firebase 🚀
 
 ## Base
 Podremos saber si la API está en funcionamiento o está detenida a través de varios métodos. Si es así, póngase en contacto con alanfmorag@gmail.com 📧
@@ -21,6 +21,7 @@ Con las siguientes rutas podrás:
 Con las siguientes rutas podrás:  
 ☑️ Subir un archivo a **Firebase**.   
 ☑️ Obtener los archivos guardados en **Firebase** de un usuario.   
+☑️ Descargar in archivo de **Firebase** y guardarlo localmente.   
 
 ## Finance
 Con las siguientes rutas podrás:  
@@ -34,6 +35,10 @@ Con las siguientes rutas podrás:
 ☑️ Obtener el algoritmo de **Pronóstico con bosques aleatorios**.  
 ☑️ Obtener el algoritmo de **Clasificación con árboles de decisión y bosques aleatorios**.  
 ☑️ Obtener el algoritmo de **Clustering particional y clasificación**.  
+
+## Improved Algorithms
+Con las siguientes rutas podrás:  
+☑️ Obtener el algoritmo de **Análisis Exploratorio de Datos (EDA)** con archivos de Firebase.  
 """
 
 openapi_tags = [
@@ -56,13 +61,17 @@ openapi_tags = [
   {
     "name": "Algorithms",
     "description": "Rutas hechas para los algoritmos de la APP"
+  },
+  {
+    "name": "Improved Algorithms",
+    "description": "Rutas hechas para los algoritmos de la APP tomando archivos de Firebase"
   }
 ]
 
 app = FastAPI(
   title="Alpha Finance API",
   description=description,
-  version="1.0.5",
+  version="1.0.10",
   openapi_tags=openapi_tags,
   contact={
     "name": "Alan Francisco Mora",
