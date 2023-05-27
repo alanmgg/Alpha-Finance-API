@@ -42,3 +42,10 @@ async def download_file(id_user: int, file_name: str):
   if file is None:
     raise HTTPException(status_code=404, detail="Archivo no encontrados ...")
   return db_module.schemas.Status(message=f"Archivo {file_name} descargado correctamente")
+
+@router.delete("/delete-file/{id_user}/{file_name}", tags=["Files"])
+async def get_files(id_user: int, file_name: str):
+  file = db_module.crud_files.delete_file(id_user=id_user, file_name=file_name)
+  if file is None:
+    raise HTTPException(status_code=404, detail="Archivo no encontrado ...")
+  return db_module.schemas.Status(message=f"Archivo {file_name} eliminado correctamente")

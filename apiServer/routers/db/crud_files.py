@@ -36,7 +36,7 @@ def upload_file(id_user, filename, route_local):
       route_remote = f"{user_result['email']}/{filename}"
       blob = bucket.blob(route_remote)
       blob.upload_from_filename(route_local)
-      
+
       return user_result
   
   return None
@@ -72,5 +72,20 @@ def download_file(id_user, file_name):
       blob.download_to_filename(archivo_local)
 
       return { "message": "Archivo descargado y creado localmente" }
+  
+  return None
+
+def delete_file(id_user, file_name):
+  result = firebase.get('/users', '')
+  for item in result:
+    if result[item]['id_user'] == id_user:
+      user_result = firebase.get('/users/' + item, '')
+      route_remote = f"{user_result['email']}/{file_name}"
+      blob = bucket.blob(route_remote)
+      try:
+        blob.delete()
+        return { "message": "Archivo eliminado" }
+      except:
+        return None
   
   return None

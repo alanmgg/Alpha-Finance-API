@@ -21,7 +21,8 @@ Con las siguientes rutas podrás:
 Con las siguientes rutas podrás:  
 ☑️ Subir un archivo a **Firebase**.   
 ☑️ Obtener los archivos guardados en **Firebase** de un usuario.   
-☑️ Descargar in archivo de **Firebase** y guardarlo localmente.   
+☑️ Descargar un archivo de **Firebase** y guardarlo localmente.   
+☑️ Eliminar un archivo de **Firebase**.   
 
 ## Finance
 Con las siguientes rutas podrás:  
