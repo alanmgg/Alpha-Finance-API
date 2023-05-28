@@ -40,6 +40,13 @@ Con las siguientes rutas podrás:
 ## Improved Algorithms
 Con las siguientes rutas podrás:  
 ☑️ Obtener el algoritmo de **Análisis Exploratorio de Datos (EDA)** con archivos de Firebase.  
+☑️ Obtener el algoritmo de **Análisis de Componentes Principales (ACP)** con archivos de Firebase.  
+☑️ Obtener el algoritmo de **Pronóstico con árboles de decisión** con archivos de Firebase.  
+☑️ Obtener el pronóstico de el algoritmo de **Pronóstico con árboles de decisión** con archivos de Firebase.  
+☑️ Obtener el algoritmo de **Pronóstico con bosques aleatorios** con archivos de Firebase.  
+☑️ Obtener el pronóstico de el algoritmo de **Pronóstico con bosques aleatorios** con archivos de Firebase.  
+☑️ Obtener el algoritmo de **Clasificación con árboles de decisión y bosques aleatorios** con archivos de Firebase.  
+☑️ Obtener el pronóstico de el algoritmo de **Clasificación con árboles de decisión y bosques aleatorios** con archivos de Firebase.  
 """
 
 openapi_tags = [
@@ -97,4 +104,5 @@ app.include_router(routers.base.router)
 app.include_router(routers.user.router)
 app.include_router(routers.finance.router)
 app.include_router(routers.algorithms.router)
+app.include_router(routers.algorithmsimproved.router)
 app.include_router(routers.file.router)

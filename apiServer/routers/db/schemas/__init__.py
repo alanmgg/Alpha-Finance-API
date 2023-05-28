@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Any
 from pydantic import BaseModel
 
 class Status(BaseModel):
@@ -13,3 +13,7 @@ class Users(BaseModel):
 
 class UsersCompanies(BaseModel):
   companies: List[str] = []
+
+class Pronostics(BaseModel):
+  column_dependient: str
+  column: Dict[str, Any] = None
