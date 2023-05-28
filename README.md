@@ -1,5 +1,5 @@
 [![Repository Status](https://img.shields.io/badge/Repository%20Status-Maintained-dark%20green.svg?style=flat-square)](https://github.com/alanmgg/Alpha-Mining-API)
-[![Website Status](https://img.shields.io/badge/Website%20Status-Online-green?style=flat-square)](https://alphafiminingapi.herokuapp.com/docs)
+[![Website Status](https://img.shields.io/badge/Website%20Status-Online-green?style=flat-square)](https://alphaminingapi.herokuapp.com/docs)
 [![Author](https://img.shields.io/badge/Author-Alan%20Francisco%20Mora%20G-blue.svg?style=flat-square)](https://github.com/alanmgg)
 [![Latest Release](https://img.shields.io/badge/Latest%20Release-28%20May%202023-yellow.svg?style=flat-square)](https://github.com/alanmgg/Alpha-Mining-API/commits/main)
 
