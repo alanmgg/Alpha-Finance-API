@@ -1,21 +1,12 @@
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <h1 align="center">Alpha Finance API ✨</h1>
+[![Repository Status](https://img.shields.io/badge/Repository%20Status-Maintained-dark%20green.svg?style=flat-square)](https://github.com/alanmgg/Alpha-Mining-API)
+[![Website Status](https://img.shields.io/badge/Website%20Status-Online-green?style=flat-square)](https://alphafiminingapi.herokuapp.com/docs)
+[![Author](https://img.shields.io/badge/Author-Alan%20Francisco%20Mora%20G-blue.svg?style=flat-square)](https://github.com/alanmgg)
+[![Latest Release](https://img.shields.io/badge/Latest%20Release-28%20May%202023-yellow.svg?style=flat-square)](https://github.com/alanmgg/Alpha-Mining-API/commits/main)
 
-  <p align="center">
-    Esta API desarrollada con la ayuda de FastApi nos ayudará a conectarnos a Yahoo Finance
-    <br />
-    <br />
-    <a href="https://alanfmorag.vercel.app/">Más sobre mi</a>
-  </p>
-</p>
+# Alpha Mining API 🐍
+Esta API desarrollada con la ayuda de FastApi nos ayudará a conectarnos a Yahoo Finance y Firebase.
 
-[![Repository Status](https://img.shields.io/badge/Repository%20Status-Maintained-dark%20green.svg?style=for-the-badge)](https://github.com/alanmgg/Alpha-Finance-API)
-[![Website Status](https://img.shields.io/badge/Website%20Status-Online-green?style=for-the-badge)](https://alphafinanceapi.herokuapp.com/docs)
-[![Author](https://img.shields.io/badge/Author-Alan%20Francisco%20Mora%20G-blue.svg?style=for-the-badge)](https://github.com/alanmgg)
-[![Latest Release](https://img.shields.io/badge/Latest%20Release-20%20May%202023-yellow.svg?style=for-the-badge)](https://github.com/alanmgg/Alpha-Finance-API/commits/main)
-[![Twitter Follow](https://img.shields.io/twitter/follow/alanmgggg?color=ffcc66&logo=twitter&logoColor=ffffff&style=for-the-badge)](https://twitter.com/alanmgggg)
+Más sobre mi: [Portafolio Web](https://www.alanfmorag.tech/)
 
 <p align="center">
   <kbd>
