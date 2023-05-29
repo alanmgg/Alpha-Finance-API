@@ -85,7 +85,7 @@ async def get_eda_improved(id_user: int, file_name: str):
   df = pd.DataFrame.from_dict(main_data)
   text_data = df.corr().to_json(orient="table")
   json_data = json.loads(text_data)
-  eda_data_finish['corr'] = json_data['data']
+  eda_data_finish['corr_data'] = json_data['data']
 
   route_local = f"./docs/{file_name}"
   os.remove(route_local)
@@ -521,7 +521,7 @@ async def get_forecast_ad_ba(id_user: int, file_name: str, column_dependient: st
 
   text_data = main_data.corr().to_json(orient="table")
   json_data = json.loads(text_data)
-  ad_ba_data_finish['corr'] = json_data['data']
+  ad_ba_data_finish['corr_data'] = json_data['data']
 
   # Aplicación del algoritmo
   nombres_columnas.remove(column_dependient)
