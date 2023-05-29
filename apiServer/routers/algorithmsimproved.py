@@ -438,6 +438,8 @@ async def get_forecast_ba_improved(id_user: int, file_name: str, column_dependie
   json_data = json.loads(text_data)
   ba_data_finish['importancia'] = json_data['data']
 
+  ba_data_finish['columnas'] = nombres_columnas
+
   route_local = f"./docs/{file_name}"
   os.remove(route_local)
 
@@ -636,6 +638,8 @@ async def get_forecast_ad_ba(id_user: int, file_name: str, column_dependient: st
 
   ad_ba_data_finish['validation'] = { 'ad': accuracy_score(y_validation, y_clasificacion_ad), 
                                       'ba': accuracy_score(y_validation, y_clasificacion_ba) }
+  
+  ad_ba_data_finish['columnas'] = nombres_columnas
 
   return ad_ba_data_finish
 
