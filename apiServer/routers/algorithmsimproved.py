@@ -31,6 +31,26 @@ app.add_middleware(
 )
 
 
+@router.get("/main-data/{id_user}/{file_name}", tags=["Improved Algorithms"])
+async def get_main_data(id_user: int, file_name: str):
+  data_finish = {}
+
+  file = db_module.crud_files.download_file(id_user=id_user, file_name=file_name)
+  if file is None:
+    raise HTTPException(status_code=404, detail="Archivo no encontrados ...")
+  
+  # Obtenemos los datos principales
+  main_data = pd.read_csv('./docs/' + file_name)
+  text_data = main_data.to_json(orient="table")
+  json_data = json.loads(text_data)
+  data_finish['main_data'] = json_data['data']
+
+  route_local = f"./docs/{file_name}"
+  os.remove(route_local)
+
+  return data_finish
+
+
 @router.get("/eda-improved/{id_user}/{file_name}", tags=["Improved Algorithms"])
 async def get_eda_improved(id_user: int, file_name: str):
   eda_data_finish = {}

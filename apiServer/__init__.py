@@ -39,6 +39,7 @@ Con las siguientes rutas podrás:
 
 ## Improved Algorithms
 Con las siguientes rutas podrás:  
+☑️ Obtener los **datos principales** de los archivos de Firebase.  
 ☑️ Obtener el algoritmo de **Análisis Exploratorio de Datos (EDA)** con archivos de Firebase.  
 ☑️ Obtener el algoritmo de **Análisis de Componentes Principales (ACP)** con archivos de Firebase.  
 ☑️ Obtener el algoritmo de **Pronóstico con árboles de decisión** con archivos de Firebase.  
@@ -77,9 +78,9 @@ openapi_tags = [
 ]
 
 app = FastAPI(
-  title="Alpha Finance API",
+  title="Alpha Mining API",
   description=description,
-  version="1.0.10",
+  version="1.1.5",
   openapi_tags=openapi_tags,
   contact={
     "name": "Alan Francisco Mora",
