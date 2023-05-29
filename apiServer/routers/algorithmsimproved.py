@@ -292,8 +292,8 @@ async def get_forecast_ad_improved(id_user: int, file_name: str, column_dependie
   return ad_data_finish
 
 
-@router.get("/forecast-ad-pronostic-improved/{id_user}/{file_name}", tags=["Improved Algorithms"])
-async def get_forecast_ad_pronostic_improved(pronostic: db_module.schemas.Pronostics, id_user: int, file_name: str):
+@router.post("/forecast-ad-pronostic-improved/{id_user}/{file_name}", tags=["Improved Algorithms"])
+async def post_forecast_ad_pronostic_improved(pronostic: db_module.schemas.Pronostics, id_user: int, file_name: str):
   ad_data_pronostic_finish = {}
   new_pronostic = {}
 
@@ -444,8 +444,8 @@ async def get_forecast_ba_improved(id_user: int, file_name: str, column_dependie
   return ba_data_finish
 
 
-@router.get("/forecast-ba-pronostic-improved/{id_user}/{file_name}", tags=["Improved Algorithms"])
-async def get_forecast_ba_pronostic_improved(pronostic: db_module.schemas.Pronostics, id_user: int, file_name: str):
+@router.post("/forecast-ba-pronostic-improved/{id_user}/{file_name}", tags=["Improved Algorithms"])
+async def post_forecast_ba_pronostic_improved(pronostic: db_module.schemas.Pronostics, id_user: int, file_name: str):
   ba_data_pronostic_finish = {}
   new_pronostic = {}
 
@@ -640,8 +640,8 @@ async def get_forecast_ad_ba(id_user: int, file_name: str, column_dependient: st
   return ad_ba_data_finish
 
 
-@router.get("/classification-ad-ba-pronostic-improved/{id_user}/{file_name}", tags=["Improved Algorithms"])
-async def get_forecast_ad_ba(pronostic: db_module.schemas.Pronostics, id_user: int, file_name: str):
+@router.post("/classification-ad-ba-pronostic-improved/{id_user}/{file_name}", tags=["Improved Algorithms"])
+async def póst_forecast_ad_ba(pronostic: db_module.schemas.Pronostics, id_user: int, file_name: str):
   ad_ba_data_pronostic_finish = {}
   new_pronostic = {}
 
